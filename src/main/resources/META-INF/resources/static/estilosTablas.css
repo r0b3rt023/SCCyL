@@ -1,0 +1,106 @@
+@charset "ISO-8859-1";
+
+
+/*ESTILO DE LA PROPIA TABLA*/
+.tablaDatos {
+	margin-top: 5%;
+	width: 95%;
+	margin: 0 auto;
+}
+
+.panelTituloTabla {
+	width:94%;
+	margin-left:2.5%;
+}
+
+.textoTituloTabla {
+	font-weight:bolder;
+}
+
+.ui-column-title {
+	font-size: 14px;
+}
+
+.columnaFecha {
+	width: 70px;
+}
+
+td.centrarContenidoColumna {
+	text-align: center;
+}
+
+.botonToggler {
+	border: none!important; 
+	background: none !important;
+	font-size: 16px !important;
+	float: right;
+}
+
+.ui-datatable-tablewrapper {
+	width: 100%;
+}
+
+/*************************************/
+/*TAMAÑO DE LAS LETRAS DE LAS CELDAS*/
+.ui-widget-content .ui-datatable-even   {
+	font-size: 13px;
+}
+
+.ui-widget-content .ui-datatable-odd {
+	font-size: 13px;
+}
+/*****************************************/
+
+/*TAMAÑO DE LAS LETRAS DEL PAGINATOR*/
+.ui-paginator.ui-paginator-top {
+	font-size:15px;
+}
+.ui-paginator.ui-paginator-bottom {
+	font-size:15px;
+}
+/************************************/
+
+/*ESTILOS DEL FIELDSET*/
+.contenedorFieldSet {
+	width: 95%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.estilosFieldset {
+	font-size: 15px;
+}
+
+.ui-selectcheckboxmenu-panel {
+	font-size:14px;
+}
+
+.ui-datepicker {
+	font-size:14px;
+}
+/************************/
+
+/*DATOS NO ENCONTRADOS*/
+.ui-datatable-empty-message {
+	font-size: 13px;
+}
+/*PANEL LEYENDAS COLUMNAS*/
+.leyendaColumnas {
+	float: left;
+	margin-left: 2.5%;
+	margin-top: 1%;
+	margin-bottom: 1%;
+}
+
+.panelLeyenda > .ui-panel-titlebar {
+	font-size: 14px;
+}
+
+.panelLeyenda {
+	font-size: 13px;
+}
+
+.ui-panel-titlebar-icon.ui-corner-all.ui-state-default {
+	border: none !important;
+}
+/******************************/

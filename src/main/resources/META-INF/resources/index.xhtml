@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<link rel="stylesheet" type="text/css"
+		href="/static/estilosGenerales.css" />
+	<link rel="stylesheet" type="text/css" href="/static/estilosIndex.css" />
+	<link rel="shortcut icon" type="image/png" href="/img/SCCyL.png" />
+	<h:outputStylesheet library="webjars" name="font-awesome/5.15.1/css/all.min-jsf.css" />
+	<h:outputStylesheet library="webjars" name="font-awesome/5.15.1/css/v4-shims.min-jsf.css" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>SCCyL (Situación COVID-19 Castilla y León)</title>
+</h:head>
+<h:body>
+	
+	<ui:include src="#{constantesFicheros.RUTA_MASTER_MENU}" />
+	<h:panelGrid styleClass="centrar">
+		<p:graphicImage value="/img/SCCyL.png" styleClass="imagenLogo" />
+	</h:panelGrid>
+	<h:form>
+		<h:panelGrid styleClass="estiloPanelOpciones" columns="5">
+			<h:link outcome="#{constantesFicheros.RUTA_OCUPACION_HOSPITALARIA}">
+				<h:panelGrid styleClass="estiloOpciones">
+					<div class="sizeIcono">
+						<i class="fa fa-procedures"/>
+					</div>
+					<p:outputLabel value="Ocupación Hospitalaria" />
+				</h:panelGrid>
+			</h:link>
+			<h:link outcome="#{constantesFicheros.RUTA_SITUACION_HOSPITALARIA}">
+				<h:panelGrid styleClass="estiloOpciones">
+					<div class="sizeIcono">
+						<i class="fas fa-hospital-user"></i>
+					</div>
+					<p:outputLabel value="Situación Hospitalaria" />
+				</h:panelGrid>
+			</h:link>
+			<h:link outcome="#{constantesFicheros.RUTA_SANITARIOS_AFECTADOS}">
+				<h:panelGrid styleClass="estiloOpciones">
+					<div class="sizeIcono">
+						<i class="fa fa-user-md"></i>
+					</div>
+					<p:outputLabel value="Sanitarios Afectados" />
+				</h:panelGrid>
+			</h:link>
+			<h:link outcome="#{constantesFicheros.RUTA_SITUACION_RESIDENCIAS}">
+				<h:panelGrid styleClass="estiloOpciones">
+					<div class="sizeIcono">
+						<i class="fas fa-hotel"></i>
+					</div>
+					<p:outputLabel value="Situación Residencias" />
+				</h:panelGrid>
+			</h:link>
+			<h:link outcome="#{constantesFicheros.RUTA_CENTROS_EDUCACION}">
+				<h:panelGrid styleClass="estiloOpciones">
+					<div class="sizeIcono">
+						<i class="fa fa-school"></i>
+					</div>
+					<p:outputLabel value="Centros Enseñanza" />
+				</h:panelGrid>
+			</h:link>
+			<h:link outcome="#{constantesFicheros.RUTA_PRUEBAS_REALIZADAS}">
+				<h:panelGrid styleClass="estiloOpciones">
+					<div class="sizeIcono">
+						<i class="fa fa-vials"></i>
+					</div>
+					<p:outputLabel value="Pruebas Realizadas" />
+				</h:panelGrid>
+			</h:link>
+			<h:link outcome="#{constantesFicheros.RUTA_ZONAS_DE_SALUD}">
+				<h:panelGrid styleClass="estiloOpciones">
+					<div class="sizeIcono">
+						<i class="fa fa-map"></i>
+					</div>
+					<p:outputLabel value="Mapa Zonas de Salud" />
+				</h:panelGrid>
+			</h:link>
+			<h:link outcome="#{constantesFicheros.RUTA_FALLECIDOS_COVID}">
+				<h:panelGrid styleClass="estiloOpciones">
+					<div class="sizeIcono">
+						<i class="fas fa-id-card-alt"></i>
+					</div>
+					<p:outputLabel value="Mortalidad COVID-19" />
+				</h:panelGrid>
+			</h:link>
+			<h:link outcome="#{constantesFicheros.RUTA_VACUNAS_RECIBIDAS}">
+				<h:panelGrid styleClass="estiloOpciones">
+					<div class="sizeIcono">
+						<i class="fas fa-syringe"></i>
+					</div>
+					<p:outputLabel value="Vacunas Recibidas" />
+				</h:panelGrid>
+			</h:link>
+			<h:link outcome="#{constantesFicheros.RUTA_PERSONAS_VACUNADAS}">
+				<h:panelGrid styleClass="estiloOpciones">
+					<div class="sizeIcono">
+						<i class="fas fa-diagnoses"></i>
+					</div>
+					<p:outputLabel value="Personas Vacunadas" />
+				</h:panelGrid>
+			</h:link>
+			
+		</h:panelGrid>
+	</h:form>
+	<ui:include src="#{constantesFicheros.RUTA_MASTER_FOOTER}"></ui:include>
+</h:body>
+</html>

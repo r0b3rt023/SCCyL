@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	style="height:100%">
+<h:head>
+	<link rel="stylesheet" type="text/css" href="/static/estilosGenerales.css"/>
+	<link rel="shortcut icon" type="image/png" href="/img/SCCyL.png" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<h:outputStylesheet library="webjars"
+		name="font-awesome/4.7.0/css/font-awesome.min-jsf.css" />
+	<title>MAPA ZONAS BÁSICAS DE SALUD </title>
+	<style type="text/css">
+		
+	</style>
+</h:head>
+<h:body style="heigth:100%">
+	<ui:include src="#{constantesFicheros.RUTA_MASTER_MENU}" />
+	<h:panelGrid style="height:100%;width:100%;text-align:center" styleClass="centrar">
+		<iframe id="mapaZonasDeSalud" src="#{constantesFicheros.URL_MAPA}"  frameborder="0" 
+		style="position: absolute;height:85%;width:90%; top:10%;left:5%;"></iframe>
+	</h:panelGrid>
+	<ui:include src="#{constantesFicheros.RUTA_MASTER_FOOTER}"></ui:include>
+</h:body>
+</html>

@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<link rel="stylesheet" type="text/css"
+		href="/static/estilosGenerales.css" />
+	<link rel="stylesheet" type="text/css" href="/static/estilosTablas.css" />
+	<link rel="shortcut icon" type="image/png" href="/img/SCCyL.png" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<h:outputStylesheet library="webjars" name="font-awesome/5.15.1/css/all.min-jsf.css" />
+	<h:outputStylesheet library="webjars" name="font-awesome/5.15.1/css/v4-shims.min-jsf.css" />
+	<title>MORTALIDAD COVID-19</title>
+</h:head>
+<h:body onload="">
+	<ui:include src="#{constantesFicheros.RUTA_MASTER_MENU}" />
+	<f:metadata>
+	   <f:event type="preRenderView" listener="#{cargarDatosAction.comprobarEstadoFicheros()}"/>
+	</f:metadata>
+	<h:form rendered="#{datosGeneralesView.descargandoFicheros}">
+		<script type="text/javascript">
+			window.setTimeout(function () {
+			  window.location.reload();
+			}, 60000);
+		</script>
+		<ui:include src="#{constantesFicheros.RUTA_LOADER}" />
+	</h:form>
+	<h:form id="formularioFiltrosBusqueda" rendered="#{datosGeneralesView.ficherosDescargados}">
+		<h:panelGrid>
+
+			<h:panelGrid id="contenedorFieldset" styleClass="contenedorFieldSet">
+				<p:fieldset legend="Filtro de busqueda" toggleable="true"
+					toggleSpeed="500" collapsed="true" styleClass="estilosFieldset">
+					<p:ajax event="toggle" update="contenedorFieldset" />
+					<h:panelGrid style="margin-bottom:1%" columns="4" cellpadding="5">
+						<h:panelGrid columns="2" cellpadding="5" cellspacing="5">
+								<p:outputLabel value="Provincias: " for="provincias" />
+								<p:selectCheckboxMenu
+									value="#{fallecidosCovidView.listaProvinciasSeleccionadas}"
+									id="provincias" filter="true" filterMatchMode="contains"
+									multiple="true">
+									<f:selectItems value="#{datosGeneralesView.listaDeProvincias}" />
+								</p:selectCheckboxMenu>
+								
+								<p:outputLabel value="Gerencias: " for="gerencias" />
+								<p:selectCheckboxMenu
+									value="#{fallecidosCovidView.listaGerenciasSeleccionadas}"
+									id="gerencias" filter="true" filterMatchMode="contains"
+									multiple="true">
+									<f:selectItems value="#{datosGeneralesView.listaGerencias}" />
+								</p:selectCheckboxMenu>
+								
+								<p:outputLabel value="Centros Sanitarios: " for="centrosSanitarios" />
+								<p:selectCheckboxMenu
+									value="#{fallecidosCovidView.listaCentrosSanitariosSeleccionados}"
+									id="centrosSanitarios" filter="true" filterMatchMode="contains"
+									multiple="true">
+									<f:selectItems value="#{datosGeneralesView.listaCentrosSanitarios}" />
+								</p:selectCheckboxMenu>
+						</h:panelGrid>
+
+						<p:separator style="width:0.001px; height:100px;" />
+
+						<h:panelGrid cellpadding="5" id="panelCalendarios" cellspacing="5" columns="2">
+							<h:panelGrid columns="2">
+								<p:outputLabel value="Fecha inicio: " for="fechaInicio" />
+								<p:calendar id="fechaInicio"
+									value="#{fallecidosCovidView.fechaInicialFiltro}"
+									maxdate="#{fallecidosCovidView.fechaMaxima}">
+									<p:ajax event="dateSelect"
+										listener="#{fallecidosCovidAction.cambiarFechaMinima()}"
+										update="panelCalendarios fechaFinal" />
+								</p:calendar>
+							</h:panelGrid>
+							<h:panelGrid columns="2">
+								<p:outputLabel value="Fecha final: " for="fechaFinal" />
+								<p:calendar id="fechaFinal"
+									value="#{fallecidosCovidView.fechaFinalFiltro}"
+									mindate="#{fallecidosCovidView.fechaMinima}"
+									maxdate="#{fallecidosCovidView.fechaHoy}">
+									<p:ajax event="dateSelect"
+										listener="#{fallecidosCovidAction.cambiarFechaMaxima()}"
+										update="panelCalendarios fechaInicio" />
+								</p:calendar>
+							</h:panelGrid>
+						</h:panelGrid>
+					</h:panelGrid>
+					<h:panelGrid columns="2" cellpadding="5">
+						<p:commandButton value="Aplicar Filtros" icon="ui-icon-search"
+							action="#{fallecidosCovidAction.aplicarFiltros()}"
+							update="@form" />
+						<p:commandButton value="Cancelar Filtros" icon="ui-icon-close"
+							rendered="#{fallecidosCovidView.verListaFiltrada}"
+							action="#{fallecidosCovidAction.cancelarBusquedaFiltra()}"
+							update="@form" />
+					</h:panelGrid>
+				</p:fieldset>
+			</h:panelGrid>
+
+			<h:panelGrid style="margin-bottom: 4%">
+
+				<p:panel styleClass="panelTituloTabla">
+					<h:panelGrid styleClass="centrar" columns="3">
+						<i class="fas fa-id-card-alt"></i>
+						<p:outputLabel value="MORTALIDAD COVID-19" styleClass="textoTituloTabla"/>
+						<i class="fas fa-id-card-alt"></i>
+					</h:panelGrid>
+				</p:panel>
+
+				<h:panelGrid>
+					<p:dataTable var="datos" id="datosGlobales"
+						rendered="#{fallecidosCovidView.verListaGlobal}"
+						value="#{fallecidosCovidView.listaFallecidosCovidGlobal}"
+						paginator="true" rows="15" styleClass="tablaDatos"
+						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords}"
+						emptyMessage="(Datos no encontrados)">
+
+						<f:facet name="header">
+							<p:commandButton id="toggler" type="button" value="Columnas"
+								style="float:right" icon="fa fa-fw fa-align-justify"
+								styleClass="botonToggler" />
+							<p:columnToggler datasource="datosGlobales" trigger="toggler" />
+						</f:facet>
+						<p:column sortBy="#{datos.fecha}" styleClass="columnaFecha"
+							filterBy="#{datos.fecha}" filterMatchMode="contains">
+							<f:facet name="header">
+								<h:outputText value="Fecha" />
+							</f:facet>
+							<p:outputLabel value="#{datos.fecha}" style="font-weight: bolder"/>
+						</p:column>
+						<p:column sortBy="#{datos.provincia}"
+							filterBy="#{datos.provincia}" filterMatchMode="contains">
+							<f:facet name="header">
+								<h:outputText value="Provincia" />
+							</f:facet>
+							<p:outputLabel value="#{datos.provincia}" />
+						</p:column>
+						<p:column sortBy="#{datos.gerencia}"
+							filterBy="#{datos.gerencia}" filterMatchMode="contains">
+							<f:facet name="header">
+								<h:outputText value="Gerencia" />
+							</f:facet>
+							<p:outputLabel value="#{datos.gerencia}" />
+						</p:column>
+						<p:column sortBy="#{datos.centro}"
+							filterBy="#{datos.provincia}" filterMatchMode="contains">
+							<f:facet name="header">
+								<h:outputText value="Centro Sanitario" />
+							</f:facet>
+							<p:outputLabel value="#{datos.centro}" />
+						</p:column>
+						<p:column sortBy="#{datos.fallecidos}"
+							styleClass="centrarContenidoColumna">
+							<f:facet name="header">
+								<h:outputText value="Fallecidos" />
+							</f:facet>
+							<p:outputLabel value="#{datos.fallecidos}" />
+						</p:column>
+						
+					</p:dataTable>
+				</h:panelGrid>
+
+				<h:panelGrid>
+					<p:dataTable var="datos" id="datosFiltrados"
+						rendered="#{fallecidosCovidView.verListaFiltrada}"
+						value="#{fallecidosCovidView.listaFallecidosCovidFiltrada}"
+						paginator="true" rows="15" styleClass="tablaDatos"
+						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords}"
+						emptyMessage="(Datos no encontrados)">
+
+						<f:facet name="header">
+							<p:commandButton id="toggler" type="button" value="Columnas"
+								style="float:right" icon="fa fa-fw fa-align-justify"
+								styleClass="botonToggler" />
+							<p:columnToggler datasource="datosFiltrados" trigger="toggler" />
+						</f:facet>
+						<p:column sortBy="#{datos.fecha}" styleClass="columnaFecha"
+							filterBy="#{datos.fecha}" filterMatchMode="contains">
+							<f:facet name="header">
+								<h:outputText value="Fecha" />
+							</f:facet>
+							<p:outputLabel value="#{datos.fecha}"  style="font-weight: bolder"/>
+						</p:column>
+						<p:column sortBy="#{datos.provincia}"
+							filterBy="#{datos.provincia}" filterMatchMode="contains">
+							<f:facet name="header">
+								<h:outputText value="Provincia" />
+							</f:facet>
+							<p:outputLabel value="#{datos.provincia}" />
+						</p:column>
+						<p:column sortBy="#{datos.gerencia}"
+							filterBy="#{datos.gerencia}" filterMatchMode="contains">
+							<f:facet name="header">
+								<h:outputText value="Gerencia" />
+							</f:facet>
+							<p:outputLabel value="#{datos.gerencia}" />
+						</p:column>
+						<p:column sortBy="#{datos.centro}"
+							filterBy="#{datos.provincia}" filterMatchMode="contains">
+							<f:facet name="header">
+								<h:outputText value="Centro Sanitario" />
+							</f:facet>
+							<p:outputLabel value="#{datos.centro}" />
+						</p:column>
+						<p:column sortBy="#{datos.fallecidos}"
+							styleClass="centrarContenidoColumna">
+							<f:facet name="header">
+								<h:outputText value="Fallecidos" />
+							</f:facet>
+							<p:outputLabel value="#{datos.fallecidos}" />
+						</p:column>
+						
+					</p:dataTable>
+				</h:panelGrid>
+			</h:panelGrid>
+		</h:panelGrid>
+		<ui:include src="#{constantesFicheros.RUTA_MASTER_FOOTER}"></ui:include>
+	</h:form>
+</h:body>
+</html>

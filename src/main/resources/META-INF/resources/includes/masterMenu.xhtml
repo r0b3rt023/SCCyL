@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<!-- 	<p:menubar styleClass="estiloMenu"> -->
+<!-- 		<p:menuitem> -->
+<!-- 			<h:link outcome="/index.xhtml" styleClass="enlaceLogo"> -->
+<!-- 				<h:graphicImage name="/img/favicon.png" styleClass="logoMenu" /> -->
+<!-- 			</h:link> -->
+<!-- 		</p:menuitem> -->
+<!-- 		<f:facet name="options"> -->
+<!-- 			<h:outputText value="SITUACIÓN COVID-19 CASTILLA Y LEÓN (SCCyL)"/> -->
+<!-- 		</f:facet> -->
+<!-- 	</p:menubar> -->
+	<p:layoutUnit position="north" styleClass="estiloMenu">
+		<h:link outcome="/index.xhtml" styleClass="enlaceLogo">
+			<h:panelGrid columns="2" style="margin-left:auto;margin-right:auto">
+				<h:outputText value="SITUACIÓN COVID-19 CASTILLA Y LEÓN (SCCyL)"
+					style="font-weight:bolder" />
+			</h:panelGrid>
+		</h:link>
+	</p:layoutUnit>
+
+</html>

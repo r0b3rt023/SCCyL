@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<link rel="stylesheet" type="text/css"
+		href="/static/estilosGenerales.css" />
+	<link rel="stylesheet" type="text/css" href="/static/estilosTablas.css" />
+	<link rel="shortcut icon" type="image/png" href="/img/SCCyL.png" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<h:outputStylesheet library="webjars" name="font-awesome/5.15.1/css/all.min-jsf.css" />
+	<h:outputStylesheet library="webjars" name="font-awesome/5.15.1/css/v4-shims.min-jsf.css" />
+	<title>PERSONAS VACUNADAS</title>
+</h:head>
+<h:body onload="">
+	<ui:include src="#{constantesFicheros.RUTA_MASTER_MENU}" />
+	<f:metadata>
+	   <f:event type="preRenderView" listener="#{cargarDatosAction.comprobarEstadoFicheros()}"/>
+	</f:metadata>
+	<h:form rendered="#{datosGeneralesView.descargandoFicheros}">
+		<script type="text/javascript">
+			window.setTimeout(function () {
+			  window.location.reload();
+			}, 60000);
+		</script>
+		<ui:include src="#{constantesFicheros.RUTA_LOADER}" />
+	</h:form>
+	<h:form id="formularioFiltrosBusqueda" rendered="#{datosGeneralesView.ficherosDescargados}">
+		<h:panelGrid>
+
+			<h:panelGrid id="contenedorFieldset" styleClass="contenedorFieldSet">
+				<p:fieldset legend="Filtro de busqueda" toggleable="true"
+					toggleSpeed="500" collapsed="true" styleClass="estilosFieldset">
+					<p:ajax event="toggle" update="contenedorFieldset" />
+					<h:panelGrid style="margin-bottom:1%" columns="4" cellpadding="5">
+						<h:panelGrid>
+							<h:panelGrid columns="2" cellpadding="5">
+								<p:outputLabel value="Provincias: " for="provincias" />
+								<p:selectCheckboxMenu
+									value="#{personasVacunadasView.listaProvinciasSeleccionadas}"
+									id="provincias" filter="true" filterMatchMode="contains"
+									multiple="true">
+									<f:selectItems value="#{datosGeneralesView.listaDeProvincias}" />
+								</p:selectCheckboxMenu>
+							</h:panelGrid>
+						</h:panelGrid>
+
+						<p:separator style="width:0.001px; height:50px;" />
+
+						<h:panelGrid cellpadding="5" id="panelCalendarios" cellspacing="5" columns="2">
+							<h:panelGrid columns="2">
+								<p:outputLabel value="Fecha inicio: " for="fechaInicio" />
+								<p:calendar id="fechaInicio"
+									value="#{personasVacunadasView.fechaInicialFiltro}"
+									maxdate="#{personasVacunadasView.fechaMaxima}">
+									<p:ajax event="dateSelect"
+										listener="#{personasVacunadasAction.cambiarFechaMinima()}"
+										update="panelCalendarios fechaFinal" />
+								</p:calendar>
+							</h:panelGrid>
+							<h:panelGrid columns="2">
+								<p:outputLabel value="Fecha final: " for="fechaFinal" />
+								<p:calendar id="fechaFinal"
+									value="#{personasVacunadasView.fechaFinalFiltro}"
+									mindate="#{personasVacunadasView.fechaMinima}"
+									maxdate="#{personasVacunadasView.fechaHoy}">
+									<p:ajax event="dateSelect"
+										listener="#{personasVacunadasAction.cambiarFechaMaxima()}"
+										update="panelCalendarios fechaInicio" />
+								</p:calendar>
+							</h:panelGrid>
+						</h:panelGrid>
+					</h:panelGrid>
+					<h:panelGrid columns="2" cellpadding="5">
+						<p:commandButton value="Aplicar Filtros" icon="ui-icon-search"
+							action="#{personasVacunadasAction.aplicarFiltros()}"
+							update="@form" />
+						<p:commandButton value="Cancelar Filtros" icon="ui-icon-close"
+							rendered="#{personasVacunadasView.verListaFiltrada}"
+							action="#{personasVacunadasAction.cancelarBusquedaFiltra()}"
+							update="@form" />
+					</h:panelGrid>
+				</p:fieldset>
+			</h:panelGrid>
+
+			<h:panelGrid style="margin-bottom: 4%">
+
+				<p:panel styleClass="panelTituloTabla">
+					<h:panelGrid styleClass="centrar" columns="3">
+						<i class="fas fa-diagnoses"></i>
+						<p:outputLabel value="PERSONAS VACUNADAS" styleClass="textoTituloTabla"/>
+						<i class="fas fa-diagnoses"></i>
+					</h:panelGrid>
+				</p:panel>
+
+				<h:panelGrid>
+					<p:dataTable var="datos" id="datosGlobales"
+						rendered="#{personasVacunadasView.verListaGlobal}"
+						value="#{personasVacunadasView.listaPersonasVacunadasGlobal}"
+						paginator="true" rows="18" styleClass="tablaDatos"
+						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords}"
+						emptyMessage="(Datos no encontrados)">
+
+						<f:facet name="header">
+							<p:commandButton id="toggler" type="button" value="Columnas"
+								style="float:right" icon="fa fa-fw fa-align-justify"
+								styleClass="botonToggler" />
+							<p:columnToggler datasource="datosGlobales" trigger="toggler" />
+						</f:facet>
+						<p:column sortBy="#{datos.fecha}" styleClass="columnaFecha"
+							filterBy="#{datos.fecha}" filterMatchMode="contains">
+							<f:facet name="header">
+								<h:outputText value="Fecha" />
+							</f:facet>
+							<p:outputLabel value="#{datos.fecha}" style="font-weight: bolder"/>
+						</p:column>
+						<p:column sortBy="#{datos.provincia}"
+							filterBy="#{datos.provincia}" filterMatchMode="contains">
+							<f:facet name="header">
+								<h:outputText value="Provincia" />
+							</f:facet>
+							<p:outputLabel value="#{datos.provincia}" />
+						</p:column>
+						<p:column sortBy="#{datos.personasVacunadas}"
+							styleClass="centrarContenidoColumna">
+							<f:facet name="header">
+								<h:outputText value="Personas Vacunadas" />
+							</f:facet>
+							<p:outputLabel value="#{datos.personasVacunadas}" />
+						</p:column>
+						
+					</p:dataTable>
+				</h:panelGrid>
+
+				<h:panelGrid>
+					<p:dataTable var="datos" id="datosFiltrados"
+						rendered="#{personasVacunadasView.verListaFiltrada}"
+						value="#{personasVacunadasView.listaPersonasVacunadasFiltrada}"
+						paginator="true" rows="18" styleClass="tablaDatos"
+						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords}"
+						emptyMessage="(Datos no encontrados)">
+
+						<f:facet name="header">
+							<p:commandButton id="toggler" type="button" value="Columnas"
+								style="float:right" icon="fa fa-fw fa-align-justify"
+								styleClass="botonToggler" />
+							<p:columnToggler datasource="datosFiltrados" trigger="toggler" />
+						</f:facet>
+						<p:column sortBy="#{datos.fecha}" styleClass="columnaFecha"
+							filterBy="#{datos.fecha}" filterMatchMode="contains">
+							<f:facet name="header">
+								<h:outputText value="Fecha" />
+							</f:facet>
+							<p:outputLabel value="#{datos.fecha}" style="font-weight: bolder"/>
+						</p:column>
+						<p:column sortBy="#{datos.provincia}"
+							filterBy="#{datos.provincia}" filterMatchMode="contains">
+							<f:facet name="header">
+								<h:outputText value="Provincia" />
+							</f:facet>
+							<p:outputLabel value="#{datos.provincia}" />
+						</p:column>
+						<p:column sortBy="#{datos.personasVacunadas}"
+							styleClass="centrarContenidoColumna">
+							<f:facet name="header">
+								<h:outputText value="Personas Vacunadas" />
+							</f:facet>
+							<p:outputLabel value="#{datos.personasVacunadas}" />
+						</p:column>
+						
+					</p:dataTable>
+				</h:panelGrid>
+			</h:panelGrid>
+		</h:panelGrid>
+		<ui:include src="#{constantesFicheros.RUTA_MASTER_FOOTER}"></ui:include>
+	</h:form>
+</h:body>
+</html>

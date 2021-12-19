@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<link rel="stylesheet" type="text/css"
+		href="/static/estilosGenerales.css" />
+	<link rel="stylesheet" type="text/css" href="/static/estilosTablas.css" />
+	<link rel="shortcut icon" type="image/png" href="/img/SCCyL.png" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<h:outputStylesheet library="webjars" name="font-awesome/5.15.1/css/all.min-jsf.css" />
+	<h:outputStylesheet library="webjars" name="font-awesome/5.15.1/css/v4-shims.min-jsf.css" />
+	<title></title>
+</h:head>
+<h:body onload="">
+	<ui:include src="#{constantesFicheros.RUTA_MASTER_MENU}" />
+	<h:form id="formularioFiltrosBusqueda">
+		<h:panelGrid>
+
+			<h:panelGrid id="contenedorFieldset" styleClass="contenedorFieldSet">
+				<p:fieldset legend="Filtro de busqueda" toggleable="true"
+					toggleSpeed="500" collapsed="true" styleClass="estilosFieldset">
+					<p:ajax event="toggle" update="contenedorFieldset" />
+					<h:panelGrid style="margin-bottom:1%" columns="4" cellpadding="5">
+						<h:panelGrid>
+							<h:panelGrid columns="2" cellpadding="5">
+								<p:outputLabel value="Provincias: " for="provincias" />
+								<p:selectCheckboxMenu
+									value=""
+									id="provincias" filter="true" filterMatchMode="contains"
+									multiple="true">
+									<f:selectItems value="#{datosGeneralesView.listaDeProvincias}" />
+								</p:selectCheckboxMenu>
+							</h:panelGrid>
+							<h:panelGrid columns="2" cellpadding="5">
+								<p:outputLabel value="Hospitales: " for="hospitales" />
+								<p:selectCheckboxMenu
+									value=""
+									id="hospitales" filter="true" filterMatchMode="contains"
+									multiple="true">
+									<f:selectItems value="#{datosGeneralesView.listaDeHospitales}" />
+								</p:selectCheckboxMenu>
+							</h:panelGrid>
+						</h:panelGrid>
+
+						<p:separator style="width:0.001px; height:100px;" />
+
+						<h:panelGrid cellpadding="5" id="panelCalendarios" cellspacing="5" columns="2">
+							<h:panelGrid columns="2">
+								<p:outputLabel value="Fecha inicio: " for="fechaInicio" />
+								<p:calendar id="fechaInicio"
+									value=""
+									maxdate="">
+									<p:ajax event="dateSelect"
+										listener=""
+										update="panelCalendarios fechaFinal" />
+								</p:calendar>
+							</h:panelGrid>
+							<h:panelGrid columns="2">
+								<p:outputLabel value="Fecha final: " for="fechaFinal" />
+								<p:calendar id="fechaFinal"
+									value=""
+									mindate=""
+									maxdate="">
+									<p:ajax event="dateSelect"
+										listener=""
+										update="panelCalendarios fechaInicio" />
+								</p:calendar>
+							</h:panelGrid>
+						</h:panelGrid>
+					</h:panelGrid>
+					<h:panelGrid columns="2" cellpadding="5">
+						<p:commandButton value="Aplicar Filtros" icon="ui-icon-search"
+							action=""
+							update="@form" />
+						<p:commandButton value="Cancelar Filtros" icon="ui-icon-close"
+							rendered=""
+							action=""
+							update="@form" />
+					</h:panelGrid>
+				</p:fieldset>
+			</h:panelGrid>
+			<h:panelGrid styleClass="leyendaColumnas" width="45%">
+				<p:panel header="LEYENDA COLUMNAS" toggleable="true"
+					styleClass="panelLeyenda" collapsed="true">
+					<h:panelGrid columns="2" cellpadding="5" cellspacing="5">
+						<h:panelGrid>
+							<h:panelGrid columns="3" cellpadding="5">
+								<i class="fa fa-fw fa-circle" style="font-size: 9px"></i>
+								<p:outputLabel value="" />
+								<p:outputLabel value="" />
+							</h:panelGrid>
+						</h:panelGrid>
+						<h:panelGrid>
+							<h:panelGrid columns="3" cellpadding="5">
+								<i class="fa fa-fw fa-circle" style="font-size: 9px"></i>
+								<p:outputLabel value="" />
+								<p:outputLabel value="" />
+							</h:panelGrid>
+						</h:panelGrid>
+					</h:panelGrid>
+				</p:panel>
+			</h:panelGrid>
+			<h:panelGrid style="margin-bottom: 4%">
+
+				<p:panel styleClass="panelTituloTabla">
+					<h:panelGrid styleClass="centrar">
+						<p:outputLabel value="" styleClass="textoTituloTabla"/>
+					</h:panelGrid>
+				</p:panel>
+
+				<h:panelGrid>
+					<p:dataTable var="datos" id="datosGlobales"
+						rendered=""
+						value=""
+						paginator="true" rows="15" styleClass="tablaDatos"
+						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords}"
+						emptyMessage="(Datos no encontrados)">
+
+						<f:facet name="header">
+							<p:commandButton id="toggler" type="button" value="Columnas"
+								style="float:right" icon="fa fa-fw fa-align-justify"
+								styleClass="botonToggler" />
+							<p:columnToggler datasource="datosGlobales" trigger="toggler" />
+						</f:facet>
+						<p:column sortBy="#{datos.fecha}" styleClass="columnaFecha"
+							filterBy="#{datos.fecha}" filterMatchMode="contains">
+							<f:facet name="header">
+								<h:outputText value="Fecha" />
+							</f:facet>
+							<p:outputLabel value="#{datos.fecha}" style="font-weight: bolder"/>
+						</p:column>
+						<p:column sortBy="#{datos.hospital}" filterBy="#{datos.hospital}"
+							filterMatchMode="contains" width="20%">
+							<f:facet name="header">
+								<h:outputText value="Hospital" />
+							</f:facet>
+							<p:outputLabel value="#{datos.hospital}" />
+						</p:column>
+						<p:column sortBy="#{datos.provincia}"
+							filterBy="#{datos.provincia}" filterMatchMode="contains">
+							<f:facet name="header">
+								<h:outputText value="Provincia" />
+							</f:facet>
+							<p:outputLabel value="#{datos.provincia}" />
+						</p:column>
+						<p:column sortBy=""
+							styleClass="centrarContenidoColumna">
+							<f:facet name="header">
+								<h:outputText value="" />
+							</f:facet>
+							<p:outputLabel value="" />
+						</p:column>
+						
+					</p:dataTable>
+				</h:panelGrid>
+
+				<h:panelGrid>
+					<p:dataTable var="datos" id="datosFiltrados"
+						rendered=""
+						value=""
+						paginator="true" rows="15" styleClass="tablaDatos"
+						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords}"
+						emptyMessage="(Datos no encontrados)">
+
+						<f:facet name="header">
+							<p:commandButton id="toggler" type="button" value="Columnas"
+								style="float:right" icon="fa fa-fw fa-align-justify"
+								styleClass="botonToggler" />
+							<p:columnToggler datasource="datosFiltrados" trigger="toggler" />
+						</f:facet>
+						<p:column sortBy="#{datos.fecha}" styleClass="columnaFecha"
+							filterBy="#{datos.fecha}" filterMatchMode="contains">
+							<f:facet name="header">
+								<h:outputText value="Fecha" />
+							</f:facet>
+							<p:outputLabel value="#{datos.fecha}"  style="font-weight: bolder"/>
+						</p:column>
+						<p:column sortBy="#{datos.hospital}" filterBy="#{datos.hospital}"
+							filterMatchMode="contains" width="20%">
+							<f:facet name="header">
+								<h:outputText value="Hospital" />
+							</f:facet>
+							<p:outputLabel value="#{datos.hospital}" />
+						</p:column>
+						<p:column sortBy="#{datos.provincia}"
+							filterBy="#{datos.provincia}" filterMatchMode="contains">
+							<f:facet name="header">
+								<h:outputText value="Provincia" />
+							</f:facet>
+							<p:outputLabel value="#{datos.provincia}" />
+						</p:column>
+						<p:column sortBy=""
+							styleClass="centrarContenidoColumna">
+							<f:facet name="header">
+								<h:outputText value="" />
+							</f:facet>
+							<p:outputLabel value="" />
+						</p:column>
+						
+					</p:dataTable>
+				</h:panelGrid>
+			</h:panelGrid>
+		</h:panelGrid>
+		<ui:include src="#{constantesFicheros.RUTA_MASTER_FOOTER}"></ui:include>
+	</h:form>
+</h:body>
+</html>

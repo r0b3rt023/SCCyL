@@ -1,0 +1,37 @@
+@charset "ISO-8859-1";
+
+.imagenLogo {
+	display: block;
+	margin: auto;
+	width: 50%;
+}
+
+.estiloPanelOpciones {
+	margin: 0 auto;
+}
+
+.botones {
+	width: 100%;
+}
+
+/*ESTILOS PARA LAS OPCIONES*/
+.estiloPanelOpciones > tbody > tr > td > a{
+	text-decoration: none;
+	color: black;
+}
+
+
+.estiloOpciones {
+	border: 1px solid black;
+	margin: 10px;
+	height:125px;
+	width: 125px;
+	text-align:center;
+	background: white;
+	font-size: 13px;
+}
+
+.sizeIcono {
+	font-size: 75px;
+}
+/******************************************/

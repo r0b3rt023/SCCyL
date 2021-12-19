@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<link rel="stylesheet" type="text/css"
+		href="/static/estilosGenerales.css" />
+	<link rel="stylesheet" type="text/css" href="/static/estilosTablas.css" />
+	<link rel="shortcut icon" type="image/png" href="/img/SCCyL.png" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<h:outputStylesheet library="webjars" name="font-awesome/5.15.1/css/all.min-jsf.css" />
+	<h:outputStylesheet library="webjars" name="font-awesome/5.15.1/css/v4-shims.min-jsf.css" />
+	<title>SITUACIÓN RESIDENCIAS</title>
+</h:head>
+<h:body onload="">
+	<ui:include src="#{constantesFicheros.RUTA_MASTER_MENU}" />
+	<f:metadata>
+	   <f:event type="preRenderView" listener="#{cargarDatosAction.comprobarEstadoFicheros()}"/>
+	</f:metadata>
+	<h:form rendered="#{datosGeneralesView.descargandoFicheros}">
+		<script type="text/javascript">
+			window.setTimeout(function () {
+			  window.location.reload();
+			}, 60000);
+		</script>
+		<ui:include src="#{constantesFicheros.RUTA_LOADER}" />
+	</h:form>
+	<h:form id="formularioFiltrosBusqueda" rendered="#{datosGeneralesView.ficherosDescargados}">
+		<h:panelGrid>
+
+			<h:panelGrid id="contenedorFieldset" styleClass="contenedorFieldSet">
+				<p:fieldset legend="Filtro de busqueda" toggleable="true"
+					toggleSpeed="500" collapsed="true" styleClass="estilosFieldset">
+					<p:ajax event="toggle" update="contenedorFieldset" />
+					<h:panelGrid style="margin-bottom:1%" columns="4" cellpadding="5">
+						<h:panelGrid>
+							<h:panelGrid columns="2" cellpadding="5">
+								<p:outputLabel value="Provincias: " for="provincias" />
+								<p:selectCheckboxMenu
+									value="#{situacionResidenciasView.listaProvinciasSeleccionadas}"
+									id="provincias" filter="true" filterMatchMode="contains"
+									multiple="true">
+									<f:selectItems value="#{datosGeneralesView.listaDeProvincias}" />
+								</p:selectCheckboxMenu>
+							</h:panelGrid>
+						</h:panelGrid>
+
+						<p:separator style="width:0.001px; height:50px;" />
+
+						<h:panelGrid cellpadding="5" id="panelCalendarios" cellspacing="5" columns="2">
+							<h:panelGrid columns="2">
+								<p:outputLabel value="Fecha inicio: " for="fechaInicio" />
+								<p:calendar id="fechaInicio"
+									value="#{situacionResidenciasView.fechaInicialFiltro}"
+									maxdate="#{situacionResidenciasView.fechaMaxima}">
+									<p:ajax event="dateSelect"
+										listener="#{situacionResidenciasAction.cambiarFechaMinima()}"
+										update="panelCalendarios fechaFinal" />
+								</p:calendar>
+							</h:panelGrid>
+							<h:panelGrid columns="2">
+								<p:outputLabel value="Fecha final: " for="fechaFinal" />
+								<p:calendar id="fechaFinal"
+									value="#{situacionResidenciasView.fechaFinalFiltro}"
+									mindate="#{situacionResidenciasView.fechaMinima}"
+									maxdate="#{situacionResidenciasView.fechaHoy}">
+									<p:ajax event="dateSelect"
+										listener="#{situacionResidenciasAction.cambiarFechaMaxima()}"
+										update="panelCalendarios fechaInicio" />
+								</p:calendar>
+							</h:panelGrid>
+						</h:panelGrid>
+					</h:panelGrid>
+					<h:panelGrid columns="2" cellpadding="5">
+						<p:commandButton value="Aplicar Filtros" icon="ui-icon-search"
+							action="#{situacionResidenciasAction.aplicarFiltros()}"
+							update="@form" />
+						<p:commandButton value="Cancelar Filtros" icon="ui-icon-close"
+							rendered="#{situacionResidenciasView.verListaFiltrada}"
+							action="#{situacionResidenciasAction.cancelarBusquedaFiltra()}"
+							update="@form" />
+					</h:panelGrid>
+				</p:fieldset>
+			</h:panelGrid>
+			<h:panelGrid styleClass="leyendaColumnas" width="65%">
+				<p:panel header="LEYENDA COLUMNAS" toggleable="true"
+					styleClass="panelLeyenda" collapsed="true">
+					<h:panelGrid columns="3" cellpadding="5" cellspacing="5">
+						<h:panelGrid>
+							<h:panelGrid columns="3" cellpadding="5">
+								<i class="fa fa-fw fa-circle" style="font-size: 9px"></i>
+								<p:outputLabel value="P.C.R" />
+								<p:outputLabel value="(Personas en Centros Residenciales)" />
+							</h:panelGrid>
+						</h:panelGrid>
+						<h:panelGrid>
+							<h:panelGrid columns="3" cellpadding="5">
+								<i class="fa fa-fw fa-circle" style="font-size: 9px"></i>
+								<p:outputLabel value="M.C.R" />
+								<p:outputLabel value="(Mortalidad en Centros Residencias)" />
+							</h:panelGrid>
+							<h:panelGrid columns="3" cellpadding="5">
+								<i class="fa fa-fw fa-circle" style="font-size: 9px"></i>
+								<p:outputLabel value="F.C.C" />
+								<p:outputLabel value="(Fallecidos con COVID-19 Confirmados)" />
+							</h:panelGrid>
+							<h:panelGrid columns="3" cellpadding="5">
+								<i class="fa fa-fw fa-circle" style="font-size: 9px"></i>
+								<p:outputLabel value="F.S.C" />
+								<p:outputLabel value="(Fallecidos con Síntomas Compatibles)" />
+							</h:panelGrid>
+						</h:panelGrid>
+						<h:panelGrid>
+							<h:panelGrid columns="3" cellpadding="5">
+								<i class="fa fa-fw fa-circle" style="font-size: 9px"></i>
+								<p:outputLabel value="C.C" />
+								<p:outputLabel value="(Confirmados con COVID-19)" />
+							</h:panelGrid>
+							<h:panelGrid columns="3" cellpadding="5">
+								<i class="fa fa-fw fa-circle" style="font-size: 9px"></i>
+								<p:outputLabel value="A.S.C" />
+								<p:outputLabel value="(Aislados con Síntomas Compatibles)" />
+							</h:panelGrid>
+							<h:panelGrid columns="3" cellpadding="5">
+								<i class="fa fa-fw fa-circle" style="font-size: 9px"></i>
+								<p:outputLabel value="A.S.S" />
+								<p:outputLabel value="(Aislados Sin Sintomas)" />
+							</h:panelGrid>
+						</h:panelGrid>
+					</h:panelGrid>
+				</p:panel>
+			</h:panelGrid>
+			<h:panelGrid style="margin-bottom: 4%">
+				<p:panel styleClass="panelTituloTabla">
+					<h:panelGrid styleClass="centrar" columns="3">
+						<i class="fas fa-hotel"></i>
+						<p:outputLabel value="SITUACIÓN COVID-19 EN CENTROS DE CARACTER RESIDENCIAL" styleClass="textoTituloTabla"/>
+						<i class="fas fa-hotel"></i>
+					</h:panelGrid>
+				</p:panel>
+				<h:panelGrid>
+					<p:dataTable var="datos" id="datosGlobales" 
+						rendered="#{situacionResidenciasView.verListaGlobal}"
+						value="#{situacionResidenciasView.listaSituacionResidenciasGlobal}"
+						paginator="true" rows="18" styleClass="tablaDatos"
+						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords}"
+						emptyMessage="(Datos no encontrados)">
+
+						<f:facet name="header">
+								<p:commandButton id="toggler" type="button" value="Columnas"
+									icon="fa fa-fw fa-align-justify"
+									styleClass="botonToggler" />
+								<p:columnToggler datasource="datosGlobales" trigger="toggler" />
+						</f:facet>
+						<p:column sortBy="#{datos.fecha}" styleClass="columnaFecha"
+							filterBy="#{datos.fecha}" filterMatchMode="contains">
+							<f:facet name="header">
+								<h:outputText value="Fecha" />
+							</f:facet>
+							<p:outputLabel value="#{datos.fecha}" style="font-weight: bolder"/>
+						</p:column>
+						<p:column sortBy="#{datos.provincia}"
+							filterBy="#{datos.provincia}" filterMatchMode="contains">
+							<f:facet name="header">
+								<h:outputText value="Provincia" />
+							</f:facet>
+							<p:outputLabel value="#{datos.provincia}" />
+						</p:column>
+						<p:column sortBy="#{datos.personasEnResidencias}"
+							styleClass="centrarContenidoColumna">
+							<f:facet name="header">
+								<h:outputText value="P.C.R" />
+							</f:facet>
+							<p:outputLabel value="#{datos.personasEnResidencias}" />
+						</p:column>
+						<p:column sortBy="#{datos.mortalidad}"
+							styleClass="centrarContenidoColumna">
+							<f:facet name="header">
+								<h:outputText value="M.C.R" />
+							</f:facet>
+							<p:outputLabel value="#{datos.mortalidad}" />
+						</p:column>
+						<p:column sortBy="#{datos.fallecidosCOVID}"
+							styleClass="centrarContenidoColumna">
+							<f:facet name="header">
+								<h:outputText value="F.C.C" />
+							</f:facet>
+							<p:outputLabel value="#{datos.fallecidosCOVID}" />
+						</p:column>
+						<p:column sortBy="#{datos.fallecidosSintomas}"
+							styleClass="centrarContenidoColumna">
+							<f:facet name="header">
+								<h:outputText value="F.S.C" />
+							</f:facet>
+							<p:outputLabel value="#{datos.fallecidosSintomas}" />
+						</p:column>
+						<p:column sortBy="#{datos.confirmadosCOVID}"
+							styleClass="centrarContenidoColumna">
+							<f:facet name="header">
+								<h:outputText value="C.C" />
+							</f:facet>
+							<p:outputLabel value="#{datos.confirmadosCOVID}" />
+						</p:column>
+						<p:column sortBy="#{datos.aisladosConSintomas}"
+							styleClass="centrarContenidoColumna">
+							<f:facet name="header">
+								<h:outputText value="A.S.C" />
+							</f:facet>
+							<p:outputLabel value="#{datos.aisladosConSintomas}" />
+						</p:column>
+						<p:column sortBy="#{datos.aisladosSinSintomas}"
+							styleClass="centrarContenidoColumna">
+							<f:facet name="header">
+								<h:outputText value="A.S.S" />
+							</f:facet>
+							<p:outputLabel value="#{datos.aisladosSinSintomas}" />
+						</p:column>
+					</p:dataTable>
+				</h:panelGrid>
+
+				<h:panelGrid>
+					<p:dataTable var="datos" id="datosFiltrados"
+						rendered="#{situacionResidenciasView.verListaFiltrada}"
+						value="#{situacionResidenciasView.listaSituacionResidenciasFiltrada}"
+						paginator="true" rows="18" styleClass="tablaDatos"
+						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords}"
+						emptyMessage="(Datos no encontrados)">
+
+						<f:facet name="header">
+							<p:commandButton id="toggler" type="button" value="Columnas"
+								style="float:right" icon="fa fa-fw fa-align-justify"
+								styleClass="botonToggler" />
+							<p:columnToggler datasource="datosFiltrados" trigger="toggler" />
+						</f:facet>
+						<p:column sortBy="#{datos.fecha}" styleClass="columnaFecha"
+							filterBy="#{datos.fecha}" filterMatchMode="contains">
+							<f:facet name="header">
+								<h:outputText value="Fecha" />
+							</f:facet>
+							<p:outputLabel value="#{datos.fecha}" style="font-weight: bolder"/>
+						</p:column>
+						<p:column sortBy="#{datos.provincia}"
+							filterBy="#{datos.provincia}" filterMatchMode="contains">
+							<f:facet name="header">
+								<h:outputText value="Provincia" />
+							</f:facet>
+							<p:outputLabel value="#{datos.provincia}" />
+						</p:column>
+						<p:column sortBy="#{datos.personasEnResidencias}"
+							styleClass="centrarContenidoColumna">
+							<f:facet name="header">
+								<h:outputText value="P.C.R" />
+							</f:facet>
+							<p:outputLabel value="#{datos.personasEnResidencias}" />
+						</p:column>
+						<p:column sortBy="#{datos.mortalidad}"
+							styleClass="centrarContenidoColumna">
+							<f:facet name="header">
+								<h:outputText value="M.C.R" />
+							</f:facet>
+							<p:outputLabel value="#{datos.mortalidad}" />
+						</p:column>
+						<p:column sortBy="#{datos.fallecidosCOVID}"
+							styleClass="centrarContenidoColumna">
+							<f:facet name="header">
+								<h:outputText value="F.C.C" />
+							</f:facet>
+							<p:outputLabel value="#{datos.fallecidosCOVID}" />
+						</p:column>
+						<p:column sortBy="#{datos.fallecidosSintomas}"
+							styleClass="centrarContenidoColumna">
+							<f:facet name="header">
+								<h:outputText value="F.S.C" />
+							</f:facet>
+							<p:outputLabel value="#{datos.fallecidosSintomas}" />
+						</p:column>
+						<p:column sortBy="#{datos.confirmadosCOVID}"
+							styleClass="centrarContenidoColumna">
+							<f:facet name="header">
+								<h:outputText value="C.C" />
+							</f:facet>
+							<p:outputLabel value="#{datos.confirmadosCOVID}" />
+						</p:column>
+						<p:column sortBy="#{datos.aisladosConSintomas}"
+							styleClass="centrarContenidoColumna">
+							<f:facet name="header">
+								<h:outputText value="A.S.C" />
+							</f:facet>
+							<p:outputLabel value="#{datos.aisladosConSintomas}" />
+						</p:column>
+						<p:column sortBy="#{datos.aisladosSinSintomas}"
+							styleClass="centrarContenidoColumna">
+							<f:facet name="header">
+								<h:outputText value="A.S.S" />
+							</f:facet>
+							<p:outputLabel value="#{datos.aisladosSinSintomas}" />
+						</p:column>
+						
+					</p:dataTable>
+				</h:panelGrid>
+			</h:panelGrid>
+		</h:panelGrid>
+		<p:layoutUnit position="south" styleClass="estiloFoot">
+			<ui:include src="#{constantesFicheros.RUTA_MASTER_FOOTER}"></ui:include>
+		</p:layoutUnit>
+	</h:form>
+</h:body>
+</html>
